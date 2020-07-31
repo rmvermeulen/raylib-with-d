@@ -1,42 +1,71 @@
 import std.stdio;
+import std.algorithm : sort;
 import raylib;
 
-/// nothing yet
-class GameObject
+import std.typecons : Typedef;
+
+/// base node
+class Node
 {
-	/// world position
+	int depth = 0;
 	Vector2 position;
-	/// called at the appropriate time
-	void onDraw()
+	this(Vector2 a_pos)
+	{
+		position = a_pos;
+	}
+
+	void update(float delta)
+	{
+	}
+
+	void draw()
 	{
 	}
 }
 
-/// Simple label
-class Label : GameObject
+class Label : Node
 {
-	/// What the label displays
-	string text = "This is a label";
-	override void onDraw()
+	string text;
+	this(Vector2 a_pos, string a_text)
 	{
-		DrawText(text.ptr, pos.x, pos.y, 28, BLACK);
+		super(a_pos);
+		text = a_text;
+	}
+
+	override void draw()
+	{
+		DrawText(text.ptr, cast(int) position.x, cast(int) position.y, 32, BLACK);
+	}
+
+	override void update(float delta)
+	{
+
 	}
 }
 
 void main()
 {
-	GameObject[] entities = [
-		new Label(Vector2(400, 300), "This is a label")
+	Node[] nodes = [
+		new Node(Vector2(10, 10)), new Label(Vector2(100, 100), "Some label"),
+		new Label(Vector2(80, 100), "Another label")
 	];
 
-	InitWindow(800, 600, "Hello, Raylib-D!");
+	InitWindow(800, 600, "My awesome game");
 	while (!WindowShouldClose())
 	{
+		auto delta = GetFrameTime();
+		foreach (ref node; nodes)
+		{
+			node.update(delta);
+		}
+		// nodes.sort((a, b) => a.depth < b.depth);
+
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-		foreach (entity; entities)
+		// Transform current_transform;
+		foreach (ref node; nodes)
 		{
-			entity.onDraw();
+			node.draw();
 		}
 		EndDrawing();
 	}
