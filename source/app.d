@@ -1,58 +1,34 @@
 import std.stdio;
 import std.algorithm : sort;
+import std.conv : text;
 import raylib;
 
+import nodes : Node, Label, Sprite;
 import std.typecons : Typedef;
-
-/// base node
-class Node
-{
-	int depth = 0;
-	Vector2 position;
-	this(Vector2 a_pos)
-	{
-		position = a_pos;
-	}
-
-	void update(float delta)
-	{
-	}
-
-	void draw()
-	{
-	}
-}
-
-class Label : Node
-{
-	string text;
-	this(Vector2 a_pos, string a_text)
-	{
-		super(a_pos);
-		text = a_text;
-	}
-
-	override void draw()
-	{
-		DrawText(text.ptr, cast(int) position.x, cast(int) position.y, 32, BLACK);
-	}
-
-	override void update(float delta)
-	{
-
-	}
-}
 
 void main()
 {
+
 	Node[] nodes = [
-		new Node(Vector2(10, 10)), new Label(Vector2(100, 100), "Some label"),
-		new Label(Vector2(80, 100), "Another label")
+		// new Node(Vector2(10, 10)),
+		new Label("Some label"), new Label(Vector2(80, 130), "Another label"),
+		// new Sprite(Vector2(50, 50), "./sprites/tileSand1.png"),
 	];
+
+	auto tex = LoadTexture("./sprites/tileSand1.png");
+	// writeln("texture: ", tex);
 
 	InitWindow(800, 600, "My awesome game");
 	while (!WindowShouldClose())
 	{
+		if (IsWindowMinimized())
+		{
+			continue;
+		}
+		if (IsWindowResized())
+		{
+			writeln("window resized: ", GetScreenWidth(), "x", GetScreenHeight());
+		}
 		auto delta = GetFrameTime();
 		foreach (ref node; nodes)
 		{
